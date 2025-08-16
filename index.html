@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Globus Music Hall</title>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0A0A0A;
+            color: #FFFFFF;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0a0f1f 0%, #101a33 50%, #1A2B48 100%);
+            color: #FFFFFF;
+            padding: 120px 20px 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80') center/cover;
+            opacity: 0.15;
+            z-index: -2;
+        }
+
+        /* Технологичная сетка поверх хедера */
+        header::after {
+            content: '';
+            position: absolute;
+            inset: -200% -200%;
+            background:
+                linear-gradient(transparent 95%, rgba(191,175,122,0.25) 100%),
+                linear-gradient(90deg, transparent 95%, rgba(191,175,122,0.25) 100%);
+            background-size: 40px 40px, 40px 40px;
+            filter: drop-shadow(0 0 20px rgba(191,175,122,0.25));
+            animation: gridMove 18s linear infinite;
+            z-index: -1;
+            opacity: .25;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate3d(0,0,0) rotate(0.001deg); }
+            100% { transform: translate3d(40px,40px,0) rotate(0.001deg); }
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 64px;
+            margin: 0 0 8px 0;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 20px rgba(191,175,122,0.3); }
+            to { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 30px rgba(191,175,122,0.6); }
+        }
+
+        .globe-icon {
+            width: 64px;
+            height: 64px;
+            vertical-align: middle;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 12px rgba(191,175,122,0.6));
+            animation: spin 18s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        nav {
+            background: rgba(0,0,0,0.9);
+            padding: 16px 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid #BFAF7A;
+        }
+
+        nav a {
+            color: #FFFFFF;
+            margin: 0 24px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: #BFAF7A;
+            transform: translateY(-2px);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background-color: #BFAF7A;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        section {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: #BFAF7A;
+            font-size: 42px;
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(45deg, #BFAF7A, #E6D294);
+            border-radius: 2px;
+        }
+
+        .event-card {
+            background: linear-gradient(135deg, rgba(26,26,26,0.8) 0%, rgba(42,42,42,0.9) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.2s ease;
+            border: 1px solid rgba(191,175,122,0.2);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(191,175,122,0.1), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .event-card:hover::before {
+            left: 100%;
+        }
+
+        .event-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            border-color: rgba(191,175,122,0.5);
+        }
+
+        .alive-image {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            height: 280px;
+            margin-bottom: 25px;
+            border: 2px solid transparent;
+            transition: border-color .3s ease;
+        }
+
+        .alive-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1);
+            transition: transform .5s ease, filter .5s ease;
+            filter: saturate(0.85) contrast(1.05) brightness(0.95);
+            will-change: transform;
+        }
+
+        .alive-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(400px at var(--mx,50%) var(--my,50%), rgba(191,175,122,0.18), transparent 60%);
+            opacity: 0;
+            transition: opacity .25s ease;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        .alive-image:hover img {
+            transform: scale(1.06);
+            filter: saturate(1.15) contrast(1.1) brightness(1.05);
+        }
+
+        .alive-image:hover::after { opacity: 1; }
+
+        .event-card h3 {
+            color: #BFAF7A;
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .event-card p {
+            font-size: 18px;
+            margin: 8px 0;
+            color: #CCCCCC;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .gallery img, .gallery video {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+        }
+
+        .gallery img:hover, .gallery video:hover {
+            transform: scale(1.05) rotate(1deg);
+            border-color: #BFAF7A;
+            box-shadow: 0 15px 35px rgba(191,175,122,0.3);
+        }
+
+        /* Кнопки действий */
+        .cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin: 28px 0 10px;
+        }
+
+        .cta {
+            background: linear-gradient(45deg, #1A2B48, #BFAF7A);
+            color: #FFFFFF;
+            padding: 14px 22px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            box-shadow: 0 10px 25px rgba(191,175,122,0.3);
+            transition: transform .2s ease, box-shadow .3s ease, background .3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px rgba(191,175,122,0.45);
+            background: linear-gradient(45deg, #BFAF7A, #1A2B48);
+        }
+
+        /* Украшение списка преимуществ */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 30px 0;
+        }
+
+        ul li {
+            font-size: 18px;
+            margin: 15px 0;
+            padding: 15px 20px;
+            background: rgba(191,175,122,0.1);
+            border-radius: 12px;
+            border-left: 4px solid #BFAF7A;
+            transition: all 0.3s ease;
+        }
+
+        ul li:hover {
+            background: rgba(191,175,122,0.2);
+            transform: translateX(10px);
+        }
+
+        footer {
+            background: linear-gradient(135deg, #1A2B48 0%, #000000 100%);
+            color: #FFFFFF;
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 16px;
+            margin-top: 80px;
+            border-top: 2px solid #BFAF7A;
+        }
+
+        /* Элегантное появление секций */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 1s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Эффект подсветки курсора */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(420px at var(--cursorX, 50vw) var(--cursorY, 50vh), rgba(191,175,122,0.12), transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+            mix-blend-mode: soft-light;
+        }
+
+        /* Стиль для секции с фоном города */
+        .city-section {
+            position: relative;
+            padding: 120px 20px;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover fixed;
+            color: #FFFFFF;
+            text-align: center;
+            border-radius: 20px;
+            margin: 40px 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .city-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(26,43,72,0.4), rgba(191,175,122,0.2));
+            border-radius: 20px;
+            pointer-events: none;
+        }
+
+        .city-section > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .city-section h2 {
+            font-size: 48px;
+            color: #FFFFFF;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+            margin-bottom: 40px;
+        }
+
+        .city-section p {
+            font-size: 20px;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+            color: #F5F5F5;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            nav a { margin: 0 14px; font-size: 16px; }
+            section { padding: 60px 15px; }
+            h2 { font-size: 32px; }
+            .event-card { padding: 26px; }
+            .city-section { padding: 80px 15px; }
+            .city-section h2 { font-size: 36px; }
+            .city-section p { font-size: 18px; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="preconnect" href="https://picsum.photos" crossorigin>
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80">
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1594736797933-d0dccda5d094?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80">
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80">
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1608270586620-248524c67de9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80">
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80">
+</head>
+<body>
+
+    <header>
+        <h1>Globus Music Hall</h1>
+        <p style="font-size: 18px; margin-top: 10px; opacity: 0.9;">Пульс музыки в сердце Надыма</p>
+    </header>
+
+    <nav>
+        <a href="#features">Что есть у нас</a>
+        <a href="#reservation">Бронирование</a>
+        <a href="#contacts">Контакты</a>
+    </nav>
+
+    <section id="features" class="fade-in">
+        <h2>Что есть в нашем заведении</h2>
+
+        <div class="event-card">
+            <div class="alive-image">
+                <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Живой концерт, крупный план сцены и света" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" data-category="concert">
+            </div>
+            <h3>🎵 Живые концерты и джемы</h3>
+            <p>Энергия сцены, живой звук и световые эффекты. Мы любим музыку и делаем её ближе.</p>
+        </div>
+
+        <div class="event-card">
+            <div class="alive-image">
+                <img src="https://static.mk.ru/upload/entities/2025/03/06/10/articles/detailPicture/a2/49/68/d8/504ca04d286849607b958eade4a035ec.jpg" alt="Бильярдный стол с кием и шарами" loading="eager" decoding="async" referrerpolicy="no-referrer" data-category="billiards">
+            </div>
+            <h3>🎱 Бильярд</h3>
+            <p>Классический стол, точные удары и дружеские матчи. Расслабьтесь и играйте с комфортом.</p>
+        </div>
+
+        <div class="event-card">
+            <div class="alive-image">
+                <img src="https://avatars.mds.yandex.net/i?id=3c9d6313c5bab2f6549533687f56149b3485783f-10814742-images-thumbs&n=13" alt="Настольный футбол, игроки за столом" loading="eager" decoding="async" referrerpolicy="no-referrer" data-category="foosball">
+            </div>
+            <h3>⚽ Настольный футбол</h3>
+            <p>Драйв и азарт у стола. Собирайте команды и устройте мини-турнир!</p>
+        </div>
+
+        <div class="event-card">
+            <div class="alive-image">
+                <img src="https://avatars.mds.yandex.net/i?id=ae006ec3d913d582b2a264ea3d75d771-4577618-images-thumbs&n=13" alt="Разливное пиво, бокалы с пеной на барной стойке" loading="eager" decoding="async" referrerpolicy="no-referrer" data-category="beer">
+            </div>
+            <h3>🍺 Пиво и барная классика</h3>
+            <p>Свежие сорта, классика и крафт. Вкус, который объединяет друзей.</p>
+        </div>
+
+        <div class="event-card">
+            <div class="alive-image">
+                <img src="https://www.uni-flensburg.de/fileadmin/content/_processed_/a/5/csm_board-games-wikimedia_2ec8cb5482.png" alt="Настольные игры, кубики и карты на столе" loading="eager" decoding="async" referrerpolicy="no-referrer" data-category="boardgames">
+            </div>
+            <h3>🎲 Настольные игры</h3>
+            <p>От быстрых вечеринок до длинных стратегий — выбирайте и проводите время круто.</p>
+        </div>
+    </section>
+
+    <section id="reservation" class="fade-in">
+        <h2>Бронирование</h2>
+        <p style="font-size: 18px; text-align: center; color: #CCCCCC; margin-bottom: 18px;">
+            Мероприятия в Globus Music Hall — это незабываемые впечатления, сильные эмоции и отличный сервис.
+            Мы бережно создаём атмосферу, где каждая деталь работает на ваш праздник.
+        </p>
+
+        <div class="cta-buttons">
+            <a class="cta" href="https://t.me/Globus_Music_Hall_bot" target="_blank" rel="noopener">🤖 Забронировать в Telegram</a>
+            <a class="cta" href="tel:+79175593637">📞 Позвонить: +7 (917) 559 36 37</a>
+        </div>
+
+        <ul>
+            <li>🎵 <strong>Музыкальный концерт</strong> — сцена, звук и свет уже ждут вас</li>
+            <li>⚽🍽️ <strong>Спортивная трансляция с банкетом</strong> — большой экран, мощный звук и меню</li>
+            <li>🏢 <strong>Корпоративное мероприятие</strong> — работаем «под ключ»</li>
+            <li>🎉🎂 <strong>Частная вечеринка и дни рождения</strong> — уют, драйв и персональная программа</li>
+            <li>🏆🎯 <strong>Турнир или соревнования</strong> — организуем, судим, награждаем</li>
+        </ul>
+
+        <p style="text-align: center; font-size: 16px; color: #BFAF7A; font-weight: 600; margin-top: -10px;">
+            Стоимость мероприятия можно уточнить у администратора.
+        </p>
+
+        <div style="background: rgba(191,175,122,0.1); padding: 30px; border-radius: 15px; margin: 30px 0; border-left: 5px solid #BFAF7A;">
+            <h4 style="color: #BFAF7A; margin-top: 0;">✨ У нас есть всё для вашего события:</h4>
+            <p style="margin: 10px 0;">• Профессиональное музыкальное оборудование и микшер</p>
+            <p style="margin: 10px 0;">• Сцена и современное освещение с динамическими эффектами</p>
+            <p style="margin: 10px 0;">• Проектор и экраны для любых видео и трансляций</p>
+            <p style="margin: 10px 0;">• Оборудованный бар с широким ассортиментом напитков</p>
+            <p style="margin: 10px 0;">• Техническая поддержка мероприятия на протяжении всего события</p>
+            <p style="margin: 10px 0;">• Бесплатная парковка для гостей</p>
+            <p style="margin: 10px 0;">• Гибкая планировка зала и отдельные зоны</p>
+            <p style="margin: 10px 0;">• Гримерная для артистов и выделенная зона для диджея</p>
+            <p style="margin: 10px 0;">• Высокоскоростной Wi‑Fi</p>
+        </div>
+
+        <p style="text-align: center; font-size: 16px; color: #AAAAAA;">
+            Никаких форм — просто пишите или звоните. Мы быстро ответим и предложим лучший вариант под ваш формат.
+        </p>
+    </section>
+
+    <section class="fade-in city-section">
+        <h2>Ваше место встречи в сердце Севера</h2>
+        <p>
+            В самом центре Надыма, где северные ветры встречаются с теплом человеческого общения, расположился наш Globus Music Hall. 
+            Мы не просто развлекательное заведение — мы культурный центр, объединяющий людей всех возрастов и интересов. 
+            Здесь рождаются новые знакомства, крепнут старые дружбы, звучит живая музыка и царит атмосфера настоящего праздника.
+            <br><br>
+            Наша команда каждый день работает над тем, чтобы создать для вас пространство, куда хочется возвращаться снова и снова. 
+            Мы знаем, как важно найти своё место в большом городе, особенно здесь, на Севере, где каждая встреча с друзьями ценится особенно высоко. 
+            В Globus Music Hall соединяются традиции гостеприимства с современными возможностями: от живых концертов до спортивных трансляций, 
+            от тихих вечеров с настольными играми до зажигательных вечеринок под любимые хиты.
+        </p>
+    </section>
+
+    <footer id="contacts">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; text-align: center;">
+            <div>
+                <h4 style="color: #BFAF7A; margin-bottom: 15px;">📍 Контакты</h4>
+                <p>ул. Заводская 1/5, г. Надым<br>Торговый центр Globus<br><a href="tel:+79175593637" style="color:#fff; text-decoration:none;">+7 (917) 559 36 37</a><br><a href="https://t.me/Globus_Music_Hall_bot" target="_blank" rel="noopener" style="color:#BFAF7A; text-decoration:none;">Telegram-бот для брони</a></p>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(191,175,122,0.3); margin-top: 30px; padding-top: 20px; text-align: center;">
+            <p>&copy; 2025 Globus Music Hall. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Плавный скролл для ссылок
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+
+        // Подсветка курсора
+        window.addEventListener('mousemove', (e) => {
+            document.documentElement.style.setProperty('--cursorX', e.clientX + 'px');
+            document.documentElement.style.setProperty('--cursorY', e.clientY + 'px');
+        });
+
+        // Анимация появления элементов при скролле
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Параллакс эффект для хедера
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const header = document.querySelector('header');
+            header.style.transform = `translateY(${scrolled * 0.25}px)`;
+        });
+
+        // 3D-наклон карточек
+        const maxTilt = 8; // градусов
+        document.querySelectorAll('.event-card').forEach(card => {
+            const handleMove = (e) => {
+                const r = card.getBoundingClientRect();
+                const relX = e.clientX - r.left;
+                const relY = e.clientY - r.top;
+                const px = relX / r.width - 0.5;
+                const py = relY / r.height - 0.5;
+                const rotateY = px * maxTilt;
+                const rotateX = -py * maxTilt;
+                card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            };
+            const reset = () => {
+                card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+            };
+            card.addEventListener('mousemove', handleMove);
+            card.addEventListener('mouseleave', reset);
+        });
+
+        // «Ожившие» изображения: подсветка по позиции курсора
+        document.querySelectorAll('.alive-image').forEach(box => {
+            box.addEventListener('mousemove', (e) => {
+                const r = box.getBoundingClientRect();
+                const x = ((e.clientX - r.left) / r.width) * 100;
+                const y = ((e.clientY - r.top) / r.height) * 100;
+                box.style.setProperty('--mx', x + '%');
+                box.style.setProperty('--my', y + '%');
+            });
+        });
+
+        // Гарантированная подгрузка изображений с фолбэками
+        (function ensureImages() {
+            const fallbackByCategory = {
+                concert: [
+                    'https://picsum.photos/seed/concert1/1280/800',
+                    'https://picsum.photos/seed/concert2/1280/800'
+                ],
+                billiards: [
+                    'https://picsum.photos/seed/billiards1/1280/800',
+                    'https://picsum.photos/seed/billiards2/1280/800'
+                ],
+                foosball: [
+                    'https://picsum.photos/seed/foosball1/1280/800',
+                    'https://picsum.photos/seed/foosball2/1280/800'
+                ],
+                beer: [
+                    'https://picsum.photos/seed/beer1/1280/800',
+                    'https://picsum.photos/seed/beer2/1280/800'
+                ],
+                boardgames: [
+                    'https://picsum.photos/seed/boardgames1/1280/800',
+                    'https://picsum.photos/seed/boardgames2/1280/800'
+                ],
+                city: [
+                    'https://picsum.photos/seed/nadym1/1280/800',
+                    'https://picsum.photos/seed/nadym2/1280/800'
+                ]
+            };
+
+            document.querySelectorAll('img[data-category]').forEach(img => {
+                img.dataset.fidx = '0';
+                img.addEventListener('error', function onErr() {
+                    const cat = this.dataset.category;
+                    const idx = parseInt(this.dataset.fidx || '0', 10);
+                    const list = fallbackByCategory[cat] || [];
+                    if (idx < list.length) {
+                        this.dataset.fidx = String(idx + 1);
+                        this.src = list[idx];
+                    } else {
+                        this.removeEventListener('error', onErr);
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
